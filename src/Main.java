@@ -3,7 +3,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Day2.runTwo();
+        Day3.runOne();
     }
 
 }
