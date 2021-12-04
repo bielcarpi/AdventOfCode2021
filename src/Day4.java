@@ -61,6 +61,70 @@ public class Day4 {
         System.out.println("The result is " + (sum * lastValue));
     }
 
+
+    public static void runTwo(){
+        int[] values = getValues();
+        if(values == null) return;
+
+        ArrayList<Tuple<Integer, Boolean>[][]> boards = getBoards();
+        if(boards == null) return;
+
+        int winnerIndex = -1; //Index of the winner in the arraylist
+        int lastValue = -1; //Last value that the winner put
+        ArrayList<Integer> winnersIndex = new ArrayList<>(); //Store the index of the winners
+
+        mainloop:
+        for(int i = 0; i < values.length; i++){
+
+            for(int j = 0; j < boards.size(); j++){
+
+                boardloop:
+                for(int k = 0; k < BOARD_ROW_LENGTH; k++){
+                    for(int z = 0; z < BOARD_ROW_LENGTH; z++) {
+                        if (boards.get(j)[k][z].x == values[i]) {
+                            boards.get(j)[k][z].y = true;
+
+                            //Now that the board is updated, check if some row or column is completed
+                            for(int r = 0; r < BOARD_ROW_LENGTH; r++){
+                                boolean rowCompleted = true;
+                                boolean columnCompleted = true;
+
+                                for(int c = 0; c < BOARD_ROW_LENGTH; c++){
+                                    if (boards.get(j)[r][c].y == false) columnCompleted = false;
+                                    if (boards.get(j)[c][r].y == false) rowCompleted = false;
+                                }
+
+                                if (rowCompleted || columnCompleted) {
+                                    for(int alreadyWinner: winnersIndex)
+                                        if(j == alreadyWinner) break boardloop;
+
+                                    winnersIndex.add(j);
+                                    if(winnersIndex.size() == boards.size()){
+                                        winnerIndex = j;
+                                        lastValue = values[i];
+                                        break mainloop;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        }
+
+        int sum = 0;
+        for(int r = 0; r < BOARD_ROW_LENGTH; r++){
+            for(int c = 0; c < BOARD_ROW_LENGTH; c++){
+                if(boards.get(winnerIndex)[r][c].y == false) sum += boards.get(winnerIndex)[r][c].x;
+            }
+        }
+
+        System.out.println("The result is " + (sum * lastValue));
+    }
+
+
     private static int[] getValues(){
         try{
             BufferedReader br = new BufferedReader(new FileReader("resources/Day4Input.txt"));
